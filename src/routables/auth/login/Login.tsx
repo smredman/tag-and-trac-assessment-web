@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthSvc from '../../../services/authentication.service';
 import { AccountType } from '../../../models/account.model';
 import { FC, ReactElement, useState } from 'react';
+import {set} from '../../../util/form-utils';
 
 const LoginComponent: FC = (): ReactElement => {
 
@@ -23,13 +24,33 @@ const LoginComponent: FC = (): ReactElement => {
         password: ""
     });
 
-    const set = name => {
-        return ({ target: { value } }) => {
-          setFormState(oldValues => ({...oldValues, [name]: value }));
+    const [formErrors, setFormErrors] = useState({
+        email: false,
+        password: false
+    });
+
+    const validateForm = (): boolean => {
+        const errors = {
+            email: false,
+            password: false
+        };
+        let validForm = true;
+        if (!formState.email) {
+            errors.email = true;
+            validForm = false;
         }
-    };
+        if (!formState.password) {
+            errors.password = true;
+            validForm = false;
+        }
+        setFormErrors(errors);
+        return validForm;
+    }
 
     const loginClicked = () => {
+        
+
+        if (!validateForm()) return;
 
         AuthSvc.api.logIn({
             email: formState.email,
@@ -70,10 +91,16 @@ const LoginComponent: FC = (): ReactElement => {
                                 </Typography>
                                 <form className="d-block">
                                     <div className="d-block mt-10">
-                                        <TextField onChange={set('email')} className="w-100" label="Email" type="email" variant="standard" />
+                                        <TextField onChange={set('email', setFormState)} className="w-100" label="Email" type="email" variant="standard" />
+                                        {
+                                            (formErrors.email) ? <Typography color="error">Required field</Typography> : ""
+                                        }
                                     </div>
                                     <div className="d-block mt-10">
-                                        <TextField onChange={set('password')} className="w-100" label="Password" type="password" variant="standard" />
+                                        <TextField onChange={set('password', setFormState)} className="w-100" label="Password" type="password" variant="standard" />
+                                        {
+                                            (formErrors.password) ? <Typography color="error">Required field</Typography> : ""
+                                        }
                                     </div>
                                     <div className="text-center mt-20">
                                         <Button variant="contained" onClick={loginClicked}>

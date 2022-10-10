@@ -40,6 +40,12 @@ const ActiveOrdersComponent: FC<{ user: User }> = ({ user }): ReactElement => {
                 key: 'id'
             },
             {
+                id: 'h',
+                label: 'Delivery Partner',
+                type: 'text',
+                key: 'partner'
+            },
+            {
                 id: 'b',
                 label: 'From',
                 type: 'text',
@@ -68,6 +74,18 @@ const ActiveOrdersComponent: FC<{ user: User }> = ({ user }): ReactElement => {
                 label: 'Status',
                 type: 'text',
                 key: 'shipmentStatus'
+            },
+            {
+                id: 'i',
+                label: 'Created',
+                type: 'text',
+                key: 'createdAt'
+            },
+            {
+                id: 'j',
+                label: 'Updated',
+                type: 'text',
+                key: 'updatedAt'
             },
             {
                 id: 'g',
@@ -145,7 +163,10 @@ const ActiveOrdersComponent: FC<{ user: User }> = ({ user }): ReactElement => {
     const listShipments = () => {
         ShipmentsSvc.api.list().subscribe({
             next: res => {
-                setTableConfig({ ...tableConfig, data: res });
+                res.forEach(item => {
+                    item["partner"] = item["deliveryPartner"].name;
+                });
+                setTableConfig({ ...tableConfig, data: res});
             },
             error: err => {
                 console.log(err);
