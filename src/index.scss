@@ -1,0 +1,9 @@
+html, body { font-size: 100%; }
+
+body {
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background: #ccc;
+}
+
+@import './styles/util';
